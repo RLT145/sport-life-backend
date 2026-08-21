@@ -1,0 +1,32 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Producto {
+  id          Int      @id @default(autoincrement())
+  nombre      String
+  marca       String
+  genero      String   @default("Hombre")
+  categoria   String   @default("Calzado")
+  descripcion String?
+  precio      Float
+  talla       String
+  imagenUrl   String
+  imagenes    String?  // Guarda el array de imágenes en formato JSON
+  createdAt   DateTime @default(now())
+}
+
+model Orden {
+  id          Int      @id @default(autoincrement())
+  cliente     String
+  telefono    String
+  direccion   String
+  total       Float
+  productos   String   // Guarda el carrito en formato JSON
+  createdAt   DateTime @default(now())
+}
