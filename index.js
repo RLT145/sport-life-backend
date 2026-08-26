@@ -55,12 +55,12 @@ app.post('/productos', upload.array('imagenes', 5), async (req, res) => {
     const { nombre, marca, genero, categoria, descripcion, precio, talla } = req.body;
     const archivos = req.files;
 
-    let urlsImagenes = [];
-    if (archivos && archivos.length > 0) {
-      urlsImagenes = archivos.map(file => `http://localhost:3000/uploads/${file.filename}`);
-    }
+   let urlsImagenes = [];
+        if (archivos && archivos.length > 0) {
+          urlsImagenes = archivos.map(file => file.path);
+        }
 
-    const imagenPrincipal = urlsImagenes[0] || 'http://localhost:3000/uploads/default.png';
+        const imagenPrincipal = urlsImagenes[0] || '';
 
     const nuevoProducto = await prisma.producto.create({
       data: {
@@ -100,7 +100,7 @@ app.put('/productos/:id', upload.array('imagenes', 5), async (req, res) => {
     };
 
     if (archivos && archivos.length > 0) {
-      const urlsImagenes = archivos.map(file => `http://localhost:3000/uploads/${file.filename}`);
+     const urlsImagenes = archivos.map(file => file.path);
       datosActualizados.imagenUrl = urlsImagenes[0];
       datosActualizados.imagenes = JSON.stringify(urlsImagenes);
     }
