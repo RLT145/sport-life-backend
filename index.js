@@ -150,10 +150,11 @@ app.post('/ordenes', async (req, res) => {
         telefono,
         direccion,
         total: parseFloat(total),
-        productos: JSON.stringify(carrito)
+       productos: JSON.stringify(carrito),
+        codigo: 'SL-' + Math.floor(1000 + Math.random() * 9000) // <-- ¡Generamos y guardamos el código aquí!
       }
     });
-    res.json({ success: true, ordenId: nuevaOrden.id });
+    res.json({ success: true, ordenId: nuevaOrden.id, codigo: nuevaOrden.codigo }); // <-- Devolvemos el código
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error al crear la orden" });
@@ -171,6 +172,16 @@ app.delete('/ordenes/:id', async (req, res) => {
   }
 });
 
+app.get('/ordenes', async (req, res) => {
+  try {
+    const listaOrdenes = await prisma.orden.findMany({
+      orderBy: { id: 'desc' }
+    });
+    res.json(listaOrdenes);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener las órdenes" });
+  }
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor backend corriendo en el puerto ${PORT}`);
