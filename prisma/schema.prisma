@@ -26,18 +26,8 @@ model Orden {
   cliente     String
   telefono    String
   direccion   String
+  codigo      String?
   total       Float
   productos   String   // Guarda el carrito en formato JSON
   createdAt   DateTime @default(now())
-}
-
-model Pedido {
-  id          Int      @id @default(autoincrement())
-  codigo      String   @unique
-  nombreCliente String?
-  telefono    String?
-  total       Float
-  detalles    String   // Aquí guardaremos qué productos pidió y sus tallas
-  estado      String   @default("Pendiente")
-  createdAt   DateTime @default(v1 ? DateTime.now() : now()) // o @default(now())
 }
