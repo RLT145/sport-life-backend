@@ -45,13 +45,17 @@ app.get('/anuncios', async (req, res) => {
 });
 
 // 2. CREAR UN NUEVO ANUNCIO (El panel de Admin usará esto)
-app.post('/anuncios', async (req, res) => {
+// CREAR UN NUEVO ANUNCIO (Con subida de foto a Cloudinary)
+app.post('/anuncios', upload.single('imagen'), async (req, res) => {
   try {
-    const { titulo, imagenUrl } = req.body;
+    const { titulo } = req.body;
+    // Si subieron un archivo, Cloudinary nos da el link en req.file.path
+    const imagenUrl = req.file ? req.file.path : null; 
+
     const nuevoAnuncio = await prisma.anuncio.create({
       data: {
         titulo,
-        imagenUrl: imagenUrl || null, // Por si suben un anuncio sin imagen
+        imagenUrl: imagenUrl,
         activo: true
       }
     });
