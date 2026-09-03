@@ -32,3 +32,11 @@ model Orden {
   productos   String   // Guarda el carrito en formato JSON
   createdAt   DateTime @default(now())
 }
+
+model Anuncio {
+  id        String   @id @default(uuid())
+  titulo    String   // El texto principal del anuncio
+  imagenUrl String?  // El signo ? significa que la imagen es opcional
+  activo    Boolean  @default(true) // Para apagarlo sin tener que borrarlo
+  createdAt DateTime @default(now())
+}
