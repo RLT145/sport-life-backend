@@ -31,7 +31,50 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
+// 1. OBTENER LOS ANUNCIOS (El Catálogo usará esto para mostrarlos)
+app.get('/anuncios', async (req, res) => {
+  try {
+    const anuncios = await prisma.anuncio.findMany({
+      orderBy: { createdAt: 'desc' } // Los ordena del más nuevo al más viejo
+    });
+    res.json(anuncios);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener los anuncios" });
+  }
+});
 
+// 2. CREAR UN NUEVO ANUNCIO (El panel de Admin usará esto)
+app.post('/anuncios', async (req, res) => {
+  try {
+    const { titulo, imagenUrl } = req.body;
+    const nuevoAnuncio = await prisma.anuncio.create({
+      data: {
+        titulo,
+        imagenUrl: imagenUrl || null, // Por si suben un anuncio sin imagen
+        activo: true
+      }
+    });
+    res.json(nuevoAnuncio);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al crear el anuncio" });
+  }
+});
+
+// 3. ELIMINAR UN ANUNCIO (El panel de Admin usará esto para quitarlos)
+app.delete('/anuncios/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await prisma.anuncio.delete({
+      where: { id }
+    });
+    res.json({ message: "Anuncio eliminado correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al eliminar el anuncio" });
+  }
+});
 app.get('/productos', async (req, res) => {
   try {
     const productos = await prisma.producto.findMany({
